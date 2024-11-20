@@ -1,0 +1,8 @@
+{
+    "path":"/Users/vyg/repa/config/mail.json",
+    "path_data":"/Users/vyg/repa/data/invest/html_report/",
+    "ya_mail_folder":"Отчеты брокера",
+    "ya_mail_broker":"broker_rep@sberbank.ru",
+    "ya_imap_host":"imap.yandex.com",
+    "ya_imap_port":"993"
+}
