@@ -1,6 +1,6 @@
 {
-    "path":"/mnt/c/Users/PCX/repositories/my_repo/config/mail.json",
-    "path_data":"/mnt/c/Users/PCX/repositories/my_repo/data/invest/html_report",
+    "path":"/Users/vyg/repa/config/mail.json",
+    "path_data":"/Users/vyg/repa/data/invest/html_report/",
     "ya_mail_folder":"Отчеты брокера",
     "ya_mail_broker":"broker_rep@sberbank.ru",
     "ya_imap_host":"imap.yandex.com",
