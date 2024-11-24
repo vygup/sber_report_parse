@@ -25,6 +25,8 @@ mail_broker = base_conf.get('ya_mail_broker')
 imap_host = base_conf.get('ya_imap_host')
 # port imap
 imap_port = base_conf.get('ya_imap_port')
+# Контент на загрузку
+list_content = base_conf.get('list_content')
 # Папка с отчетами
 try:
     mail_folder = base_conf.get('ya_mail_folder')
@@ -45,6 +47,7 @@ login_mail = config_json.get('ya_mail_invest')
 try:
     os.mkdir(path_data + '/day/')
     os.mkdir(path_data + '/period/')
+    os.mkdir(path_data + '/other/')
     print('Структура папок создана')
 except:
     print('Структура папок корректна')
@@ -86,31 +89,33 @@ try:
         #Только новые письма  
         if uid_max > uid_old:
             sub_max = message.subject
-            # только отчеты от сбер брокера
+            # только от почты сбер брокера
             if message.from_ == mail_broker:
                 # только отчеты
-                if str(message.subject).find('Отчет брокера') > 0:
-                    # Проверка типа отчета и перенаправление загрузки
-                    if str(message.subject).find('за период') > 0:
-                        path_corr = '/period/'
-                    else:
-                        path_corr = '/day/'
-                    # забираем данные из сообщения
-                    mail = message.obj
-                    # забираем только письма со списком подобъектов
-                    if mail.is_multipart():
-                        # забираем части и подчасти дерева объектов сообщений в порядке обхода в глубину
-                        for part in mail.walk():
-                            # забираем тип содержимого сообщения, только с файлом
-                            if part.get_content_type() == 'application/data':
-                                # забираем название файла
-                                filename = part.get_filename()
-                                # продолжаем, если файл точно есть
-                                if filename:
-                                    print_logs('Скачивание отчета: ' + filename)
-                                    with open(str(path_data + path_corr + filename), 'wb') as new_file:
-                                        new_file.write(part.get_payload(decode=True))
-                                    cnt_report += 1
+                #if str(message.subject).find('Отчет брокера') > 0:
+                # Проверка типа отчета и перенаправление загрузки
+                if str(message.subject).find('Отчет брокера за период') > 0:
+                    path_corr = '/period/'
+                elif str(message.subject).find('Отчет брокера') > 0:
+                    path_corr = '/day/'
+                else:
+                    path_corr = '/other/'
+                # забираем данные из сообщения
+                mail = message.obj
+                # забираем только письма со списком подобъектов
+                if mail.is_multipart():
+                    # забираем части и подчасти дерева объектов сообщений в порядке обхода в глубину
+                    for part in mail.walk():
+                        # забираем тип содержимого сообщения, только с файлом
+                        if part.get_content_type() in list_content:
+                            # забираем название файла
+                            filename = part.get_filename()
+                            # продолжаем, если файл точно есть
+                            if filename:
+                                print_logs('Скачивание отчета: ' + filename)
+                                with open(str(path_data + path_corr + filename), 'wb') as new_file:
+                                    new_file.write(part.get_payload(decode=True))
+                                cnt_report += 1
 
     # отчет по работе
     if uid_max == uid_old:
